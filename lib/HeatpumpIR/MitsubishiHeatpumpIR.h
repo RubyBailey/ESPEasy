@@ -35,7 +35,7 @@
 #define MITSUBISHI_AIRCON1_MODE_ISEE  0x40 // Isee
 #define MITSUBISHI_AIRCON2_MODE_IFEEL 0x00 // MSY
 
-#define MITSUBISHI_AIRCON1_MODE_OFF   0x00 // Power FFi
+#define MITSUBISHI_AIRCON1_MODE_OFF   0x00 // Power OFF
 #define MITSUBISHI_AIRCON1_MODE_ON    0x20 // Power ON
 
 // Mitsubishi fan codes
