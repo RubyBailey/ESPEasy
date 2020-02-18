@@ -126,7 +126,7 @@ void MitsubishiHeatpumpIR::send(IRSender& IR, uint8_t powerModeCmd, uint8_t oper
         operatingMode = MITSUBISHI_AIRCON2_MODE_COOL;
         break;
       case MODE_DRY:
-        operatingMode = MITSUBISHI_AIRCON2_MODE_DRY;
+        operatingMode = MITSUBISHI_AIRCON1_MODE_DRY;
         break;
       case MODE_FAN:
         operatingMode = MITSUBISHI_AIRCON2_MODE_FAN;
