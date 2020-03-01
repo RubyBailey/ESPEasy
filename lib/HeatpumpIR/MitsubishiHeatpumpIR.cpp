@@ -93,78 +93,87 @@ void MitsubishiHeatpumpIR::send(IRSender& IR, uint8_t powerModeCmd, uint8_t oper
     powerMode = MITSUBISHI_AIRCON1_MODE_OFF;
   }
 
-  if (_mitsubishiModel !=  MITSUBISHI_MSY)
+  switch (_mitsubishiModel)
   {
-    Serial.printf("Mode=%d\n",operatingModeCmd);
-    switch (operatingModeCmd)
+    case MITSUBISHI_FA: // set operating model for FA
+      {
+        switch (operatingModeCmd)
+        {
+        case MODE_AUTO:
+          operatingMode = MITSUBISHI_AIRCON3_MODE_AUTO;
+          break;
+        case MODE_HEAT:
+          operatingMode = MITSUBISHI_AIRCON3_MODE_HEAT;
+          break;
+        case MODE_COOL:
+          operatingMode = MITSUBISHI_AIRCON3_MODE_COOL;
+          break;
+        case MODE_DRY:
+          operatingMode = MITSUBISHI_AIRCON3_MODE_DRY;
+          break;
+        }
+      break;
+      }
+    case MITSUBISHI_MSY:
+      {
+//        operatingMode = MITSUBISHI_AIRCON2_MODE_HEAT;
+        switch (operatingModeCmd)
+        {
+        case MODE_AUTO:
+          operatingMode = MITSUBISHI_AIRCON2_MODE_AUTO;
+          break;
+        case MODE_HEAT:
+          operatingMode = MITSUBISHI_AIRCON2_MODE_HEAT;
+          break;
+        case MODE_COOL:
+          operatingMode = MITSUBISHI_AIRCON2_MODE_COOL;
+          break;
+        case MODE_DRY:
+          operatingMode = MITSUBISHI_AIRCON2_MODE_DRY;
+          break;
+        case MODE_FAN:
+          operatingMode = MITSUBISHI_AIRCON2_MODE_FAN;
+          break;
+        }
+      break;  
+      }
+    default:
     {
-      case MODE_AUTO:
-        operatingMode = MITSUBISHI_AIRCON1_MODE_AUTO;
-        break;
-      case MODE_HEAT:
-        operatingMode = MITSUBISHI_AIRCON1_MODE_HEAT;
-        break;
-      case MODE_COOL:
-        operatingMode = MITSUBISHI_AIRCON1_MODE_COOL;
-        break;
-      case MODE_DRY:
-        operatingMode = MITSUBISHI_AIRCON1_MODE_DRY;
-        break;
-      case MODE_FAN:
-        if (_mitsubishiModel == MITSUBISHI_FE) {
-          operatingMode = MITSUBISHI_AIRCON1_MODE_FAN;
-          temperatureCmd = 24;
-        } else {
+      Serial.printf("Mode=%d\n",operatingModeCmd);
+      switch (operatingModeCmd)
+      {
+        case MODE_AUTO:
+          operatingMode = MITSUBISHI_AIRCON1_MODE_AUTO;
+          break;
+        case MODE_HEAT:
+          operatingMode = MITSUBISHI_AIRCON1_MODE_HEAT;
+          break;
+        case MODE_COOL:
           operatingMode = MITSUBISHI_AIRCON1_MODE_COOL;
-          // Temperature needs to be set to 31 degrees for 'simulated' FAN mode
-          temperatureCmd = 31;
-        }
-        break;
-      case MODE_MAINT: // Maintenance mode is just the heat mode at +10, FAN5
-        if (_mitsubishiModel == MITSUBISHI_FE || _mitsubishiModel == MITSUBISHI_KJ) {
-          operatingMode |= MITSUBISHI_AIRCON1_MODE_HEAT;
-          temperature = 10; // Default to +10 degrees
-          fanSpeedCmd = FAN_AUTO;
-        }
-        break;
+          break;
+        case MODE_DRY:
+          operatingMode = MITSUBISHI_AIRCON1_MODE_DRY;
+          break;
+        case MODE_FAN:
+          if (_mitsubishiModel == MITSUBISHI_FE) {
+            operatingMode = MITSUBISHI_AIRCON1_MODE_FAN;
+            temperatureCmd = 24;
+          } else {
+            operatingMode = MITSUBISHI_AIRCON1_MODE_COOL;
+            // Temperature needs to be set to 31 degrees for 'simulated' FAN mode
+            temperatureCmd = 31;
+          }
+          break;
+        case MODE_MAINT: // Maintenance mode is just the heat mode at +10, FAN5
+          if (_mitsubishiModel == MITSUBISHI_FE || _mitsubishiModel == MITSUBISHI_KJ) {
+            operatingMode |= MITSUBISHI_AIRCON1_MODE_HEAT;
+            temperature = 10; // Default to +10 degrees
+            fanSpeedCmd = FAN_AUTO;
+          }
+          break;
+      }
+      break;
     }
-  }
-  else if (_mitsubishiModel == MITSUBISHI_FA) // set operating model for FA
-  {
-	  switch (operatingModeCmd)
-	  {
-	  case MODE_AUTO:
-		  operatingMode = MITSUBISHI_AIRCON3_MODE_AUTO;
-		  break;
-	  case MODE_HEAT:
-		  operatingMode = MITSUBISHI_AIRCON3_MODE_HEAT;
-		  break;
-	  case MODE_COOL:
-		  operatingMode = MITSUBISHI_AIRCON3_MODE_COOL;
-		  break;
-	  case MODE_DRY:
-		  operatingMode = MITSUBISHI_AIRCON3_MODE_DRY;
-		  break;
-	  }
-  }
-  else
-  {
-	  operatingMode = MITSUBISHI_AIRCON2_MODE_COOL;
-	  switch (operatingModeCmd)
-	  {
-	  case MODE_AUTO:
-		  operatingMode = MITSUBISHI_AIRCON2_MODE_IFEEL;
-		  break;
-	  case MODE_COOL:
-		  operatingMode = MITSUBISHI_AIRCON2_MODE_COOL;
-		  break;
-	  case MODE_DRY:
-		  operatingMode = MITSUBISHI_AIRCON2_MODE_DRY;
-		  break;
-	  case MODE_FAN:
-		  operatingMode = MITSUBISHI_AIRCON2_MODE_FAN;
-		  break;
-	  }  
   }
 
   switch (fanSpeedCmd)
