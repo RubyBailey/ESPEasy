@@ -116,7 +116,6 @@ void MitsubishiHeatpumpIR::send(IRSender& IR, uint8_t powerModeCmd, uint8_t oper
       }
     case MITSUBISHI_MSY:
       {
-//        operatingMode = MITSUBISHI_AIRCON2_MODE_HEAT;
         switch (operatingModeCmd)
         {
         case MODE_AUTO:
@@ -134,6 +133,8 @@ void MitsubishiHeatpumpIR::send(IRSender& IR, uint8_t powerModeCmd, uint8_t oper
         case MODE_FAN:
           operatingMode = MITSUBISHI_AIRCON2_MODE_FAN;
           break;
+        default:
+          operatingMode = MITSUBISHI_AIRCON2_MODE_AUTO;
         }
       break;  
       }
@@ -199,7 +200,7 @@ void MitsubishiHeatpumpIR::send(IRSender& IR, uint8_t powerModeCmd, uint8_t oper
 
   }
 
-  if ( temperature != 10 && temperatureCmd > 16 && temperatureCmd < 32)
+  if ( temperature != 10 && temperatureCmd >= 16 && temperatureCmd <= 32)
   {
     temperature = temperatureCmd;
   }
